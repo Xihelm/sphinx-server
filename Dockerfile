@@ -5,7 +5,12 @@ MAINTAINER Quentin de Longraye <quentin@dldl.fr>
 
 COPY ./requirements.txt requirements.txt
 
-RUN apk add --no-cache --virtual --update py3-pip make wget ca-certificates ttf-dejavu openjdk8-jre graphviz \
+RUN apk update && apk add build-base libzmq musl-dev python3 python3-dev zeromq-dev
+RUN pip3 install pyzmq
+# reduce image size by cleaning up the build packages
+RUN apk del build-base musl-dev python3-dev zeromq-dev
+
+RUN apk add --no-cache --virtual --update build-base py3-pip py3-zmq make wget ca-certificates ttf-dejavu openjdk8-jre graphviz \
     && pip install --upgrade pip \
     && pip install --no-cache-dir  -r requirements.txt
 
